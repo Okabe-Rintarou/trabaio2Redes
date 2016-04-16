@@ -15,7 +15,7 @@ from socket import *
 
 def main():
 
-    serverPort = 2080
+    serverPort = 2081
     serverSocket = socket(AF_INET, SOCK_STREAM)
 
     serverSocket.bind(('', serverPort))
@@ -73,8 +73,8 @@ def get_net_info():
 
 def get_site_info(site):
 	s = pyping.ping(site, udp = False)
-	#sInfo = ''
 	print ("ho\n");
+	#sInfo = ''
 	if(s.ret_code == 0):#DEU BOM
 		
 		sInfo = '<h3>CONNECTION SUCCESS: </h3>' + str(s.destination)
@@ -99,6 +99,11 @@ def http_handle(request_string):
 	request = request_string.split('\r\n')#Lista com todas as linhas enviadas
 	print 'LISTA REQUEST: ', request
 	request.remove("")#Remove a blank link
+	try:#Por algum motivo, depois de enviar os dados originais, aparece um novo request em branco, ta bugando tudo
+		fileReq = request[0].split()[1][1:];#Linha 0 da request, segunda palavra, ignore primeiro caracter
+	except IndexERROR:
+		output = ('\nHTTP/1.1 400 Bad Request\n\n')
+		return output
 
 	fileReq = request[0].split()[1][1:];#Linha 0 da request, segunda palavra, ignore primeiro caracter
 	print 'requested File:', fileReq
